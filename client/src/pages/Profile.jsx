@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -37,6 +38,7 @@ export default function Profile() {
     if (file) {
       handleFileUpload(file);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   const handleFileUpload = (file) => {
@@ -184,6 +186,9 @@ export default function Profile() {
         >
           {loading ? "Cargando..." : "Actualizar"}
         </button>
+        <Link to={"/create-listing"} className="bg-sky-700 text-yellow-50 rounded-lg p-3 uppercase hover:opacity-80 text-center">
+          Listar
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
