@@ -26,6 +26,8 @@ export default function Profile() {
   const [fileError, setFileError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   //firebase storage
@@ -127,6 +129,21 @@ export default function Profile() {
     }
   };
 
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setShowListingsError(true);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Perfil</h1>
@@ -186,7 +203,10 @@ export default function Profile() {
         >
           {loading ? "Cargando..." : "Actualizar"}
         </button>
-        <Link to={"/create-listing"} className="bg-sky-700 text-yellow-50 rounded-lg p-3 uppercase hover:opacity-80 text-center">
+        <Link
+          to={"/create-listing"}
+          className="bg-sky-700 text-yellow-50 rounded-lg p-3 uppercase hover:opacity-80 text-center"
+        >
           Crear Lista
         </Link>
       </form>
@@ -206,6 +226,46 @@ export default function Profile() {
       <p className="text-green-700">
         {updateSuccess ? "Actualizado con exito" : ""}
       </p>
+      <button
+        onClick={handleShowListings}
+        className="text-green-600 w-full font-semibold "
+      >
+        Mostrar Lista
+      </button>
+      <p className="text-red-800 mt-5">
+        {showListingsError ? "Error al mostrar lista" : ""}
+      </p>
+      {userListings && userListings.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-7 text-2xl underline font-semibold">
+            Su Lista
+          </h1>
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className="border rounded-lg p-3 flex justify-between items-center gap-4"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="portada de lista"
+                  className="h-16 w-16 object-contain rounded-lg"
+                />
+              </Link>
+              <Link
+                to={`/listing/${listing._id}`}
+                className="flex-1 text-slate-700 font-semibold hover:underline truncate"
+              >
+                <p>{listing.name}</p>
+              </Link>
+              <div className="flex flex-col items-center">
+                <button className="text-red-700 uppercase">Borrar</button>
+                <button className="text-sky-700 uppercase">Editar</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
