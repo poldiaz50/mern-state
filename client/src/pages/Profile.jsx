@@ -187,7 +187,7 @@ export default function Profile() {
           {loading ? "Cargando..." : "Actualizar"}
         </button>
         <Link to={"/create-listing"} className="bg-sky-700 text-yellow-50 rounded-lg p-3 uppercase hover:opacity-80 text-center">
-          Listar
+          Crear Lista
         </Link>
       </form>
       <div className="flex justify-between mt-5">
