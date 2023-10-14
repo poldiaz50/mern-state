@@ -284,7 +284,9 @@ export default function Profile() {
                 >
                   Borrar
                 </button>
-                <button className="text-sky-700 uppercase">Editar</button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="text-sky-700 uppercase">Editar</button>
+                </Link>
               </div>
             </div>
           ))}
