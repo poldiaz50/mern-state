@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
+import { useSelector } from "react-redux";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import {
   FaBath,
   FaBed,
   FaChair,
-  FaMapMarkedAlt,
   FaMapMarkerAlt,
   FaParking,
   FaShare,
 } from "react-icons/fa";
+import Contact from "../components/Contact";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -20,7 +21,10 @@ export default function Listing() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState(false);
+  const [contact, setContact] = useState(false);
   const params = useParams();
+  const { currentUser } = useSelector((state) => state.user);
+  //console.log(currentUser._id, listing?.userRef);
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -42,7 +46,7 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.listingId]);
-  console.log(loading);
+  //console.log(loading);
   return (
     <main>
       {loading && <p className="text-center mt-7 text-2xl">Cargando...</p>}
@@ -106,7 +110,7 @@ export default function Listing() {
               <span className="font-semibold text-black">Descripcion - </span>
               {listing.description}
             </p>
-            <ul className="text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm: gap-6">
+            <ul className="text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6">
               <li className="flex items-center gap-1 whitespace-nowrap text-green-900 font-semibold text-sm">
                 <FaBed className="text-lg" />
                 {listing.bedrooms > 1
@@ -121,17 +125,22 @@ export default function Listing() {
               </li>
               <li className="flex items-center gap-1 whitespace-nowrap text-green-900 font-semibold text-sm">
                 <FaParking className="text-lg" />
-                {
-                  listing.parking ? "Con parqueadero" : "Sin parqueadero"
-                }
+                {listing.parking ? "Con parqueadero" : "Sin parqueadero"}
               </li>
               <li className="flex items-center gap-1 whitespace-nowrap text-green-900 font-semibold text-sm">
                 <FaChair className="text-lg" />
-                {
-                  listing.furniShed ? "Amueblado" : "No amueblado"
-                }
+                {listing.furniShed ? "Amueblado" : "No amueblado"}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button
+                onClick={() => setContact(true)}
+                className="bg-slate-700 text-yellow-50 rounded-lg uppercase hover:opacity-95 p-3"
+              >
+                Contactar al administrador
+              </button>
+            )}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}
