@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log(listings);
+  //console.log(listings);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -53,9 +54,9 @@ export default function Search() {
       const data = await res.json();
       setListings(data);
       setLoading(false);
-    }
-    fetchListings()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    fetchListings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
   const handleSubmit = (e) => {
@@ -207,10 +208,25 @@ export default function Search() {
           </button>
         </form>
       </div>
-      <div className="">
+      <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
           Listado de Inmuebles:
         </h1>
+        <div className="flex flex-wrap gap-4 p-7">
+          {!loading && listings.length === 0 && (
+            <p className="text-xl text-slate-700">
+              No se encontro ningun inmueble
+            </p>
+          )}
+          {loading && (
+            <p className="text-xl text-slate-700 text-center w-full">
+              Cargando...
+            </p>
+          )}
+          {!loading &&
+            listings &&
+            listings.map((listing) => <ListingItem key={listing._id} listing={listing} />)}
+        </div>
       </div>
     </div>
   );

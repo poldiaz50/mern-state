@@ -107,7 +107,7 @@ export default function CreateListing() {
     }
     if (
       e.target.id === "parking" ||
-      e.target.id === "furnished" ||
+      e.target.id === "furniShed" ||
       e.target.id === "offer"
     ) {
       setFormData({
